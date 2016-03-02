@@ -3,7 +3,8 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 from PyQt4.QtOpenGL import *
 from vector import Vector2f
-from graphics import drawArrow
+from parameters import Parameters
+from leader import Leader
 
 
 class OGLWidget(QGLWidget):
@@ -12,6 +13,9 @@ class OGLWidget(QGLWidget):
         self.xres = 1280
         self.yres = 720
         self.setMinimumSize(self.xres,self.yres)
+
+        self.params = Parameters()
+        self.leader = Leader(Vector2f(0.0, 0.0), self.params)
         # set render step
         self.renderTimer = QtCore.QTimer()
         self.renderTimer.setInterval(16)
@@ -21,7 +25,7 @@ class OGLWidget(QGLWidget):
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glLoadIdentity()
-        drawArrow(Vector2f(0.0, 0.0), 0.1, 0)
+        self.leader.render()
 
     def resizeGL(self, w, h):
         glMatrixMode(GL_PROJECTION)
