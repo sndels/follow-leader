@@ -16,11 +16,20 @@ class OGLWidget(QGLWidget):
 
         self.params = Parameters()
         self.leader = Leader(Vector2f(0.0, 0.0), self.params)
-        # set render step
+
+        # set compute timer
+        self.computeTimer = QtCore.QTimer()
+        self.computeTimer.setInterval(16)
+        self.computeTimer.timeout.connect(self.compute)
+        self.computeTimer.start()
+        # set render timer
         self.renderTimer = QtCore.QTimer()
         self.renderTimer.setInterval(16)
         self.renderTimer.timeout.connect(self.updateGL)
         self.renderTimer.start()
+
+    def compute(self):
+        self.leader.move()
 
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT)
