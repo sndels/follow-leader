@@ -22,13 +22,13 @@ class Leader():
         rForce.rotate(self.wAngle)
         wForce += rForce
         if self.pos.x > 1.2:
-            wForce += Vector2f(-1.0, 0.0) * self.pos.x * 0.01
+            wForce += Vector2f(-1.0, 0.0) * self.pos.x * 0.002
         elif self.pos.x < -1.2:
-            wForce += Vector2f(1.0, 0.0) * (1 - self.pos.x) * 0.01
+            wForce += Vector2f(1.0, 0.0) * (1 - self.pos.x) * 0.002
         if self.pos.y > 0.7:
-            wForce += Vector2f(0.0, -1.0) * self.pos.y * 0.01
+            wForce += Vector2f(0.0, -1.0) * self.pos.y * 0.002
         elif self.pos.y < -0.7:
-            wForce += Vector2f(0.0, 1.0) * (1 - self.pos.y) * 0.01
+            wForce += Vector2f(0.0, 1.0) * (1 - self.pos.y) * 0.002
         wForce.trunc(self.params.leaderMaxF)
         self.wAngle += (random.random() * 2 - 1) * self.wChange
         steering = wForce / self.params.leaderMass
