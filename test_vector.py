@@ -1,6 +1,6 @@
 import unittest
 from math import pi, sqrt, atan2
-from vector import Vector2f
+from vector import Vector2f, trunc, dist
 
 class Test(unittest.TestCase):
     def test_add(self):
@@ -97,16 +97,54 @@ class Test(unittest.TestCase):
         vec1 = Vector2f(-0.234522, -0.123477)
         self.assertEqual(round(vec1.angle(), 5), round(atan2(vec1.y, vec1.x) + 2 * pi, 5), "202.76703 degrees failed")
 
+    def test_getNormalized(self):
+        vec1 = Vector2f(0.0, 0.0)
+        vec2 = vec1.getNormalized()
+        self.assertEqual(vec1.x, vec2.x, "Normalized zerovector x failed")
+        self.assertEqual(vec1.y, vec2.y, "Normalized zerovector y failed")
+        vec1 = Vector2f(1.0, 0.0)
+        vec2 = vec1.getNormalized()
+        self.assertEqual(vec1.x, vec2.x, "Normalized (1.0, 0.0) x failed")
+        self.assertEqual(vec1.y, vec2.y, "Normalized (1.0, 0.0) y failed")
+        vec1 = Vector2f(0.0, 1.0)
+        vec2 = vec1.getNormalized()
+        self.assertEqual(vec1.x, vec2.x, "Normalized (0.0, 1.0) x failed")
+        self.assertEqual(vec1.y, vec2.y, "Normalized (0.0, 1.0) y failed")
+        vec1 = Vector2f(1.23122, 0.23342).getNormalized()
+        self.assertEqual(round(vec1.x, 5), 0.98250, "Normalized l>1 x failed")
+        self.assertEqual(round(vec1.y, 5), 0.18627, "Normalized l>1 y failed")
+        vec1 = Vector2f(0.73122, 0.23342).getNormalized()
+        self.assertEqual(round(vec1.x, 5), 0.95264, "Normalized l<1 x failed")
+        self.assertEqual(round(vec1.y, 5), 0.30410, "Normalized l<1 y failed")
+
+    def test_trunc(self):
+        vec1 = Vector2f(0.0, 0.0)
+        vec2 = vec1
+        trunc(vec2, 2)
+        self.assertEqual(vec1.len(), vec2.len(), "Zerovector failed")
+        vec1 = Vector2f(1.0, 1.0)
+        vec2 = vec1
+        trunc(vec2, 2)
+        self.assertEqual(vec1.len(), vec2.len(), "Shorter vector failed")
+        vec1 = Vector2f(1.0, 1.0)
+        vec2 = vec1
+        trunc(vec2, sqrt(2))
+        self.assertEqual(vec1.len(), vec2.len(), "Same length vector failed")
+        vec1 = Vector2f(2.0, 2.0)
+        vec2 = vec1
+        trunc(vec2, 2)
+        self.assertEqual(round(vec2.len(), 5), 2, "Longer vector failed")
+
     def test_dist(self):
         vec1 = Vector2f(1.0, 0.0)
         vec2 = Vector2f(0.0, 1.0)
-        self.assertEqual(vec1.dist(vec2), sqrt(2), "Dist1 failed")
+        self.assertEqual(dist(vec1, vec2), sqrt(2), "Dist1 failed")
         vec1 = Vector2f(0.0, 0.0)
         vec2 = Vector2f(0.0, 0.0)
-        self.assertEqual(vec1.dist(vec2), 0.0, "Dist2 failed")
+        self.assertEqual(dist(vec1, vec2), 0.0, "Dist2 failed")
         vec1 = Vector2f(0.2314320, 0.3242123)
         vec2 = Vector2f(-0.2342343, 0.0324121)
-        self.assertEqual(round(vec1.dist(vec2), 5), 0.54954, "Dist3 failed")
+        self.assertEqual(round(dist(vec1, vec2), 5), 0.54954, "Dist3 failed")
 
 if __name__ == '__main__':
     unittest.main()

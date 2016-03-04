@@ -35,28 +35,17 @@ class Vector2f():
             angle += 2 * pi
         return angle
 
-    def dist(self, vec):
-        return sqrt(pow(self.x - vec.x, 2) + pow(self.y - vec.y, 2))
-
     def getNormalized(self):
+        if self.x == 0.0 and self.y == 0:
+            return Vector2f(0.0, 0.0)
         l = sqrt(pow(self.x, 2) + pow(self.y, 2))
         return Vector2f(self.x / l, self.y / l)
 
-    def getTrunc(self, max_l):
-        l = sqrt(pow(self.x, 2) + pow(self.y, 2))
-        if l > max_l:
-            return Vector2f(self.x * max_l / l, self.y * max_l / l)
-        return Vector2f(self.x, self.y)
-
-def distance(vec1, vec2):
+def dist(vec1, vec2):
     return sqrt(pow(vec1.x - vec2.x, 2) + pow(vec1.y - vec2.y, 2))
 
-def normalize(vec):
-    l = sqrt(pow(vec.x, 2) + pow(vec.y, 2))
-    return Vector2f(vec.x / l, vec.y / l)
-
 def trunc(vec, max_l):
-    l = sqrt(pow(vec.x, 2) + pow(vec.y, 2))
+    l = vec.len()
     if l > max_l:
-        return Vector2f(vec.x * max_l / l, vec.y * max_l / l)
-    return vec
+        vec.x *= max_l / l
+        vec.y *= max_l / l
