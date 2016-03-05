@@ -55,7 +55,7 @@ class Vector2f():
             self.x /= l
             self.y /= l
 
-def dist(vec1, vec2):
+def distance(vec1, vec2):
     return sqrt(pow(vec1.x - vec2.x, 2) + pow(vec1.y - vec2.y, 2))
 
 def trunc(vec, max_l):

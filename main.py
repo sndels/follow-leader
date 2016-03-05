@@ -3,8 +3,9 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 from PyQt4.QtOpenGL import *
 from vector import Vector2f
-from parameters import Parameters
+from parameters import PLeader, PFollower
 from leader import Leader
+from follower import Follower
 
 
 class OGLWidget(QGLWidget):
@@ -14,8 +15,10 @@ class OGLWidget(QGLWidget):
         self.yres = 720
         self.setMinimumSize(self.xres,self.yres)
 
-        self.params = Parameters()
-        self.leader = Leader(Vector2f(0.0, 0.0), self.params)
+        leaderParams = PLeader()
+        self.leader = Leader(leaderParams)
+        followerParams = PFollower()
+        self.follower = Follower(self.leader, followerParams)
 
         # set compute timer
         self.computeTimer = QtCore.QTimer()
@@ -30,11 +33,13 @@ class OGLWidget(QGLWidget):
 
     def compute(self):
         self.leader.move()
+        self.follower.move()
 
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glLoadIdentity()
         self.leader.render()
+        self.follower.render()
 
     def resizeGL(self, w, h):
         glMatrixMode(GL_PROJECTION)

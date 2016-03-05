@@ -3,10 +3,16 @@ Class for simulation Parameters
 
 Holds all simulation parameters and handles changes to mutable ones
 '''
-class Parameters():
+class PLeader():
     def __init__(self):
-        self.timeScale = 1.0
+        self.mass = 10
+        self.maxV = 0.002
+        self.maxF = 0.001
 
-        self.leaderMass = 10
-        self.leaderMaxV = 0.002
-        self.leaderMaxF = 0.001
+class PFollower():
+    def __init__(self):
+        self.mass = 10
+        self.maxV = 0.0025
+        self.maxF = 0.0015
+        self.followDist = 0.01
+        self.slowingD = 0.1
