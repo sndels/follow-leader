@@ -15,6 +15,6 @@ class PFollower():
         self.mass = 20
         self.maxV = 0.8
         self.maxF = 0.4
-        self.followDist = 10
+        self.followDist = 40
         self.slowingD = 20
         self.separationD = 30
