@@ -9,7 +9,7 @@ angle1f - degrees counter clockwise with arrow initially pointing right
 '''
 def drawArrow(pos2f, scale1f, angle1f, color):
     glLoadIdentity()
-    glTranslatef(pos2f.x / 640 - 1, pos2f.y / 360 - 1, 0.0)
+    glTranslatef(pos2f.x / 512 - 1, pos2f.y / 386 - 1, 0.0)
     glRotatef(angle1f, 0.0, 0.0, -1.0)
     glScalef(scale1f, scale1f, scale1f)
     if color == "RED":

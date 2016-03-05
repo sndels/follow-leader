@@ -3,10 +3,10 @@ class Grid():
         self.cells = []
         for i in range(32):
             self.cells.append([])
-            for j in range(18):
+            for j in range(24):
                 self.cells[i].append([])
 
-    def pop(self, follower, x, y):
+    def remove(self, follower, x, y):
         if x > 0 and x < len(self.cells) and y > 0 and y < len(self.cells[0]):
             self.cells[x][y].remove(follower)
 

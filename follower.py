@@ -1,15 +1,16 @@
 import random
-import parameters
+from parameters import PFollower, PGlobal
 from graphics import drawArrow
 from leader import Leader
 from math import pi, floor
 from vector import Vector2f, normalize, trunc, distance
 
 class Follower():
-    def __init__(self, leader, params, grid):
+    def __init__(self, leader, params, gParams, grid):
         self.params = params
+        self.gParams = gParams
         self.grid = grid
-        self.pos = Vector2f(random.random() * 1280, random.random() * 720)
+        self.pos = Vector2f(random.random() * 1024, random.random() * 768)
         self.loc = Vector2f(0.0, 0.0)
         self.calcLoc()
         self.grid.insert(self, self.loc.x, self.loc.y)
@@ -21,9 +22,9 @@ class Follower():
         return self.pos
 
     def calcLoc(self):
-        newLoc = Vector2f(floor(self.pos.x / 40), floor(self.pos.y / 40))
+        newLoc = Vector2f(floor(self.pos.x / 32), floor(self.pos.y / 32))
         if newLoc.x != self.loc.x or newLoc.y != self.loc.y:
-            self.grid.pop(self, self.loc.x, self.loc.y)
+            self.grid.remove(self, self.loc.x, self.loc.y)
             self.loc = newLoc
             self.grid.insert(self, self.loc.x, self.loc.y)
 
@@ -47,12 +48,12 @@ class Follower():
         steer = trunc(target - self.pos, self.params.maxF)
         repulsionF = self.calcRepulsion()
         steer = trunc(steer + repulsionF, self.params.maxF)
-        acc = steer / self.params.mass
+        acc = steer / self.params.mass * self.gParams.speed
         self.v = trunc(self.v + acc, self.params.maxV)
         dist = distance(self.pos, target)
         if dist < self.params.slowingD:
             self.v *= dist / self.params.slowingD
-        self.pos += self.v
+        self.pos += self.v * self.gParams.speed
         newLoc = self.calcLoc()
         self.orientation = self.v.angle() * 180 / pi
 
