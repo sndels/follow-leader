@@ -6,6 +6,7 @@ from vector import Vector2f
 from parameters import PLeader, PFollower
 from leader import Leader
 from follower import Follower
+from grid import Grid
 
 
 class OGLWidget(QGLWidget):
@@ -15,10 +16,14 @@ class OGLWidget(QGLWidget):
         self.yres = 720
         self.setMinimumSize(self.xres,self.yres)
 
-        leaderParams = PLeader()
-        self.leader = Leader(leaderParams)
-        followerParams = PFollower()
-        self.follower = Follower(self.leader, followerParams)
+        self.leaderParams = PLeader()
+        self.leader = Leader(self.leaderParams)
+        self.followerParams = PFollower()
+
+        self.grid = Grid()
+        self.followers = []
+        for i in range(self.followerParams.num):
+            self.followers.append(Follower(self.leader, self.followerParams, self.grid))
 
         # set compute timer
         self.computeTimer = QtCore.QTimer()
@@ -33,13 +38,15 @@ class OGLWidget(QGLWidget):
 
     def compute(self):
         self.leader.move()
-        self.follower.move()
+        for i in range(self.followerParams.num):
+            self.followers[i].move(self.followers)
 
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glLoadIdentity()
         self.leader.render()
-        self.follower.render()
+        for i in range(self.followerParams.num):
+            self.followers[i].render()
 
     def resizeGL(self, w, h):
         glMatrixMode(GL_PROJECTION)

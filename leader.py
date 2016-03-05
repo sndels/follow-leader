@@ -1,17 +1,17 @@
 import random
 from parameters import PLeader
-from math import pi
+from math import pi, floor
 from vector import Vector2f, trunc, normalize
 from graphics import drawArrow
 
 class Leader():
     def __init__(self, params):
         self.params = params
-        self.pos = Vector2f(0.0, 0.0)
+        self.pos = Vector2f(640.0, 360.0)
         self.v = Vector2f(0.0000001, 0.0)
         self.orientation = 0.0
-        self.cDist = 0.002
-        self.cRad = 0.0005
+        self.cDist = 0.8
+        self.cRad = 0.8
         self.wAngle = 0.0
         self.wChange = 0.5
 
@@ -28,14 +28,14 @@ class Leader():
         rForce = normalize(self.v) * self.cRad
         rForce.rotate(self.wAngle)
         wForce += rForce
-        if self.pos.x > 1.2:
-            wForce += Vector2f(-1.0, 0.0) * self.pos.x * 0.002
-        elif self.pos.x < -1.2:
-            wForce += Vector2f(1.0, 0.0) * (1 - self.pos.x) * 0.002
-        if self.pos.y > 0.7:
-            wForce += Vector2f(0.0, -1.0) * self.pos.y * 0.002
-        elif self.pos.y < -0.7:
-            wForce += Vector2f(0.0, 1.0) * (1 - self.pos.y) * 0.002
+        if self.pos.x > 1100:
+            wForce += Vector2f(-1.0, 0.0) * self.pos.x /100 * self.params.maxF
+        elif self.pos.x < 100:
+            wForce += Vector2f(1.0, 0.0) * (1280 - self.pos.x) /100 * self.params.maxF
+        if self.pos.y > 650:
+            wForce += Vector2f(0.0, -1.0) * self.pos.y /100 * self.params.maxF
+        elif self.pos.y < 70:
+            wForce += Vector2f(0.0, 1.0) * (720 - self.pos.y) /100 * self.params.maxF
         wForce.trunc(self.params.maxF)
         self.wAngle += (random.random() * 2 - 1) * self.wChange
         steering = wForce / self.params.mass

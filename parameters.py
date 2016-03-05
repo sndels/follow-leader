@@ -5,14 +5,16 @@ Holds all simulation parameters and handles changes to mutable ones
 '''
 class PLeader():
     def __init__(self):
-        self.mass = 10
-        self.maxV = 0.002
-        self.maxF = 0.001
+        self.mass = 20
+        self.maxV = 0.8
+        self.maxF = 0.4
 
 class PFollower():
     def __init__(self):
-        self.mass = 10
-        self.maxV = 0.0025
-        self.maxF = 0.0015
-        self.followDist = 0.01
-        self.slowingD = 0.1
+        self.num = 100
+        self.mass = 20
+        self.maxV = 0.8
+        self.maxF = 0.4
+        self.followDist = 10
+        self.slowingD = 20
+        self.separationD = 30
