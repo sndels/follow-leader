@@ -46,8 +46,7 @@ class GLWidget(QGLWidget):
         elif num < 0:
             num *= -1
             for i in range(0, num):
-                popd = self.followers.pop()
-                self.grid.remove(popd, popd.loc.x, popd.loc.y)
+                self.followers.pop()
 
     def compute(self):
         self.setFollowers()
