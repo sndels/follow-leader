@@ -46,7 +46,8 @@ class GLWidget(QGLWidget):
         elif num < 0:
             num *= -1
             for i in range(0, num):
-                self.followers.pop()
+                popd = self.followers.pop()
+                self.grid.remove(popd, popd.loc.x, popd.loc.y)
 
     def compute(self):
         self.setFollowers()
@@ -77,7 +78,7 @@ class Window(QtGui.QWidget):
         random.seed(100)
         self.glWidget = GLWidget()
         self.globalSpeedLabel = self.createLabel("Global Speed")
-        self.globalSpeedSlider = self.createSlider(1, 20, 1)
+        self.globalSpeedSlider = self.createSlider(0, 20, 1)
         self.globalSpeedSlider.valueChanged.connect(self.glWidget.globalParams.setSpeed)
 
         self.leaderSpeedLabel = self.createLabel("Leader Speed")
