@@ -11,7 +11,7 @@ class Follower():
         self.gParams = gParams
         self.grid = grid
         self.pos = Vector2f(random.random() * 1024, random.random() * 768)
-        self.loc = Vector2f(0.0, 0.0)
+        self.loc = Vector2f(0, 0)
         self.calcLoc()
         self.grid.insert(self, self.loc.x, self.loc.y)
         self.v = Vector2f(0.0001, 0.0)
@@ -22,7 +22,7 @@ class Follower():
         return self.pos
 
     def calcLoc(self):
-        newLoc = Vector2f(floor(self.pos.x / 32), floor(self.pos.y / 32))
+        newLoc = Vector2f(int(floor(self.pos.x / 32)), int(floor(self.pos.y / 32)))
         if newLoc.x != self.loc.x or newLoc.y != self.loc.y:
             self.grid.remove(self, self.loc.x, self.loc.y)
             self.loc = newLoc
