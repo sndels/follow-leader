@@ -6,6 +6,11 @@ class Grid():
             for j in range(24):
                 self.cells[i].append([])
 
+    def clear(self):
+        for i in self.cells:
+            for j in i:
+                del j[:]
+
     def remove(self, follower, x, y):
         if x > 0 and x < len(self.cells) and y > 0 and y < len(self.cells[0]):
             self.cells[x][y].remove(follower)

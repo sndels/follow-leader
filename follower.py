@@ -21,9 +21,7 @@ class Follower():
 
     def calcRepulsion(self, followers):
         repulsionF = Vector2f(0.0, 0.0)
-        for i in followers:
-            if (self.loc.x == i.loc.x + 1 or self.loc.x == i.loc.x or self.loc.x == i.loc.x - 1) and\
-               (self.loc.y == i.loc.y + 1 or self.loc.y == i.loc.y or self.loc.y == i.loc.y - 1):
+        for i in self.grid.getNeighbours(self.loc.x, self.loc.y):
                 d = distance(self.pos, i.pos)
                 if d < self.params.separationD and d != 0:
                     repulsionF += (self.pos - i.getPos()) * self.params.separationD / d
@@ -51,4 +49,4 @@ class Follower():
         self.orientation = self.v.angle() * 180 / pi
 
     def render(self):
-        drawArrow(self.pos, 0.012, -self.orientation, "WHITE")
+        drawArrow(self.pos, 0.012, self.orientation, "WHITE")

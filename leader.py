@@ -45,4 +45,4 @@ class Leader():
         self.orientation = self.v.angle() * 180 / pi
 
     def render(self):
-        drawArrow(self.pos, 0.02, -self.orientation, "RED")
+        drawArrow(self.pos, 0.02, self.orientation, "RED")

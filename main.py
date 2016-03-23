@@ -47,8 +47,11 @@ class GLWidget(QGLWidget):
             num *= -1
             for i in range(0, num):
                 self.followers.pop()
+        for i in self.followers:
+            self.grid.insert(i, i.loc.x, i.loc.y)
 
     def compute(self):
+        self.grid.clear()
         self.setFollowers()
         self.leader.move()
         for i in range(self.followerParams.num):
