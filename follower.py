@@ -11,7 +11,8 @@ class Follower():
         self.gParams = gParams
         self.grid = grid
         self.pos = Vector2f(random.random() * 1024, random.random() * 768)
-        self.loc = Vector2f(floor(self.pos.x / 32), floor(self.pos.y / 32))
+        self.loc = Vector2f(floor(self.pos.x / 32)+1, floor(self.pos.y / 32)+1)
+        self.grid.insert(self, self.loc.x, self.loc.y)
         self.v = Vector2f(0.0001, 0.0)
         self.orientation = 0.0
         self.leader = leader
@@ -21,8 +22,10 @@ class Follower():
 
     def calcRepulsion(self, followers):
         repulsionF = Vector2f(0.0, 0.0)
+        collisionChecks = 0
         for i in self.grid.getNeighbours(self.loc.x, self.loc.y):
                 d = distance(self.pos, i.pos)
+                collisionChecks += 1
                 if d < self.params.separationD and d != 0:
                     repulsionF += (self.pos - i.getPos()) * self.params.separationD / d
         fLeader = self.leader.getPos() + normalize(self.leader.getV()) * self.params.followDist
@@ -32,12 +35,12 @@ class Follower():
         d = distance(self.pos, self.leader.getPos())
         if d < self.params.followDist:
             repulsionF += (self.pos - self.leader.getPos()) * 2 * self.params.followDist / d
-        return repulsionF
+        return repulsionF, collisionChecks
 
     def move(self, followers):
         target = self.leader.getPos() - normalize(self.leader.getV()) * self.params.followDist
         steer = trunc(target - self.pos, self.params.maxF)
-        repulsionF = self.calcRepulsion(followers)
+        repulsionF, checks = self.calcRepulsion(followers)
         steer = trunc(steer + repulsionF, self.params.maxF)
         acc = steer / self.params.mass * self.gParams.speed
         self.v = trunc(self.v + acc, self.params.maxV)
@@ -45,8 +48,13 @@ class Follower():
         if dist < self.params.slowingD:
             self.v *= dist / self.params.slowingD
         self.pos += self.v * self.gParams.speed
-        self.loc = Vector2f(floor(self.pos.x / 32), floor(self.pos.y / 32))
+        newLoc = Vector2f(floor(self.pos.x / 32)+1, floor(self.pos.y / 32)+1)
+        if newLoc.x != self.loc.x or newLoc.y != self.loc.y:
+            self.grid.remove(self, self.loc.x, self.loc.y)
+            self.loc = newLoc
+            self.grid.insert(self, self.loc.x, self.loc.y)
         self.orientation = self.v.angle() * 180 / pi
+        return checks
 
     def render(self):
         drawArrow(self.pos, 0.012, self.orientation, "WHITE")

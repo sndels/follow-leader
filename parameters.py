@@ -18,7 +18,7 @@ class PFollower():
         self.num = 100
         self.mass = 40
         self.maxV = 0.8
-        self.maxF = 0.4
+        self.maxF = 0.1
         self.followDist = 40
         self.slowingD = 20
         self.separationD = 30
@@ -42,3 +42,10 @@ class PGlobal():
 
     def setSpeed(self, newSpeed):
         self.speed = newSpeed / 10.0
+
+class PInfo():
+    def __init__(self):
+        self.frameTime = [0, 0, 0, 0, 0]
+        self.lastFrame = 0.0
+        self.collisionChecks = [0, 0, 0, 0, 0]
+        self.computeTime = [0, 0, 0, 0, 0]

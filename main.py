@@ -4,7 +4,7 @@ from OpenGL.GL import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtOpenGL import *
 from vector import Vector2f
-from parameters import PLeader, PFollower, PGlobal
+from parameters import PLeader, PFollower, PGlobal, PInfo
 from leader import Leader
 from follower import Follower
 from grid import Grid
@@ -16,6 +16,7 @@ class GLWidget(QGLWidget):
         self.xres = 1024
         self.yres = 768
         self.setMinimumSize(self.xres,self.yres)
+        self.info = PInfo()
         self.globalParams = PGlobal()
 
         self.leaderParams = PLeader()
@@ -26,6 +27,9 @@ class GLWidget(QGLWidget):
         self.followers = []
         self.setFollowers()
 
+        # set info timer
+        self.infoTimer = QtCore.QTime()
+        self.infoTimer.start()
         # set compute timer
         self.computeTimer = QtCore.QTimer()
         self.computeTimer.setInterval(16)
@@ -46,23 +50,40 @@ class GLWidget(QGLWidget):
         elif num < 0:
             num *= -1
             for i in range(0, num):
-                self.followers.pop()
-        for i in self.followers:
-            self.grid.insert(i, i.loc.x, i.loc.y)
+                popd = self.followers.pop()
+                self.grid.remove(popd, popd.loc.x, popd.loc.y)
 
     def compute(self):
-        self.grid.clear()
+        # compTime = self.infoTimer.elapsed()
         self.setFollowers()
         self.leader.move()
-        for i in range(self.followerParams.num):
-            self.followers[i].move(self.followers)
+        collisions = 0
+        for i in self.followers:
+            collisions += i.move(self.followers)
+        self.info.collisionChecks = collisions
+        # self.info.computeTime.pop(0)
+        # compTime = self.infoTimer.elapsed() - compTime
+        # self.info.computeTime.append(compTime)
 
     def paintGL(self):
+        self.info.computeTime.pop(0)
+        compTime = self.infoTimer.elapsed() - self.info.lastFrame
+        self.info.computeTime.append(compTime)
         glClear(GL_COLOR_BUFFER_BIT)
         glLoadIdentity()
         self.leader.render()
-        for i in range(len(self.followers)):
-            self.followers[i].render()
+        for i in self.followers:
+            i.render()
+        curTime = self.infoTimer.elapsed()
+        self.info.frameTime.pop(0)
+        self.info.frameTime.append(curTime - self.info.lastFrame)
+        self.info.lastFrame = curTime
+        self.updateInfo()
+
+    def updateInfo(self):
+        print("FPS: " + str(1 / (sum(self.info.frameTime)/1000/len(self.info.frameTime))))
+        print("Collision checks: " + str(self.info.collisionChecks))
+        print("RendToRend: " + str(sum(self.info.computeTime)/len(self.info.computeTime)) + 'ms\n')
 
     def resizeGL(self, w, h):
         glMatrixMode(GL_PROJECTION)

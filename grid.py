@@ -1,15 +1,10 @@
 class Grid():
     def __init__(self):
         self.cells = []
-        for i in range(32):
+        for i in range(35):
             self.cells.append([])
-            for j in range(24):
+            for j in range(27):
                 self.cells[i].append([])
-
-    def clear(self):
-        for i in self.cells:
-            for j in i:
-                del j[:]
 
     def remove(self, follower, x, y):
         if x > 0 and x < len(self.cells) and y > 0 and y < len(self.cells[0]):
