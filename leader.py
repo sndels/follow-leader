@@ -1,7 +1,7 @@
 import random
 from parameters import PLeader
 from math import pi, floor
-from vector import Vector2f, trunc, normalize
+from vector import Vector2f, distance, trunc, normalize
 from graphics import drawArrow, drawDiamond
 
 class Leader():
@@ -62,16 +62,21 @@ class Leader():
         self.v = trunc(self.v + steering, self.params.maxV)
 
     def seek(self):
-        pass
+        steer = trunc(self.target - self.pos, self.params.maxF)
+        steer = trunc(steer, self.params.maxF)
+        acc = steer / self.params.mass * self.gParams.speed
+        self.v = trunc(self.v + acc, self.params.maxV)
 
     def move(self):
         if self.controlled:
-            pass
+            self.v = normalize(self.v) * self.params.maxV
         elif self.seeking:
             self.seek()
         else:
             self.wander()
         self.pos += self.v * self.gParams.speed
+        if self.seeking and distance(self.pos, self.target) < 10.0:
+            self.seeking = False
         self.orientation = self.v.angle() * 180 / pi
 
     def render(self):
