@@ -1,14 +1,14 @@
 import sys
+import os
 import random
 from OpenGL.GL import *
-from PyQt4 import QtGui, QtCore
+from PyQt4 import Qt, QtGui, QtCore
 from PyQt4.QtOpenGL import *
 from vector import Vector2f
 from parameters import PLeader, PFollower, PGlobal, PInfo
 from leader import Leader
 from follower import Follower
 from grid import Grid
-
 
 class GLWidget(QGLWidget):
     def __init__(self):
@@ -95,6 +95,22 @@ class GLWidget(QGLWidget):
     def initializeGL(self):
         glClearColor(0.0, 0.0, 0.0, 1.0)
 
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Space and not event.isAutoRepeat():
+            self.leader.toggleControl()
+        elif self.leader.isControlled():
+            if event.key() == QtCore.Qt.Key_Left:
+                self.leader.turn('L')
+            elif event.key() == QtCore.Qt.Key_Right:
+                self.leader.turn('R')
+
+    def setLeaderTarget(self, target):
+        vecTarget = Vector2f(target.x(), target.y())
+        vecTarget.x -= 16
+        vecTarget.y = 768 - (vecTarget.y - 23)
+        if vecTarget.x > 0 and vecTarget.x < 1024 and vecTarget.y > 0 and vecTarget.y < 768:
+            self.leader.goTo(vecTarget)
+
 class Window(QtGui.QWidget):
     def __init__(self):
         super(Window, self).__init__()
@@ -160,6 +176,12 @@ class Window(QtGui.QWidget):
         label = QtGui.QLabel(text)
         label.setAlignment(QtCore.Qt.AlignHCenter)
         return label
+
+    def keyPressEvent(self, event):
+        self.glWidget.keyPressEvent(event)
+
+    def mousePressEvent(self, event):
+        self.glWidget.setLeaderTarget(event.pos())
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

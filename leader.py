@@ -2,7 +2,7 @@ import random
 from parameters import PLeader
 from math import pi, floor
 from vector import Vector2f, trunc, normalize
-from graphics import drawArrow
+from graphics import drawArrow, drawDiamond
 
 class Leader():
     def __init__(self, params, gParams):
@@ -15,6 +15,9 @@ class Leader():
         self.cRad = 0.8
         self.wAngle = 0.0
         self.wChange = 0.5
+        self.target = Vector2f(0.0, 0.0)
+        self.controlled = False
+        self.seeking = False
 
         random.seed(100)
 
@@ -24,7 +27,23 @@ class Leader():
     def getV(self):
         return self.v
 
-    def move(self):
+    def isControlled(self):
+        return self.controlled
+
+    def toggleControl(self):
+        self.controlled = not self.controlled
+
+    def goTo(self, target):
+        self.target = target
+        self.seeking = True
+
+    def turn(self, direction):
+        if direction == 'L':
+            self.v.rotate(0.05)
+        elif direction == 'R':
+            self.v.rotate(-0.05)
+
+    def wander(self):
         wForce = normalize(self.v) * self.cDist
         rForce = normalize(self.v) * self.cRad
         rForce.rotate(self.wAngle)
@@ -41,8 +60,21 @@ class Leader():
         self.wAngle += (random.random() * 2 - 1) * self.wChange
         steering = wForce / self.params.mass * self.gParams.speed
         self.v = trunc(self.v + steering, self.params.maxV)
+
+    def seek(self):
+        pass
+
+    def move(self):
+        if self.controlled:
+            pass
+        elif self.seeking:
+            self.seek()
+        else:
+            self.wander()
         self.pos += self.v * self.gParams.speed
         self.orientation = self.v.angle() * 180 / pi
 
     def render(self):
         drawArrow(self.pos, 0.02, self.orientation, "RED")
+        if self.seeking:
+            drawDiamond(self.target, 0.015)

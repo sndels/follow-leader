@@ -30,3 +30,17 @@ def drawArrow(pos2f, scale1f, angle1f, color):
         glColor3f(1.0, 1.0, 1.0); glVertex2f(-0.4, 0.0)
         glColor3f(1.0, 1.0, 1.0); glVertex2f(-1.0,-0.8)
         glEnd()
+
+
+def drawDiamond(pos2f, scale1f):
+    glLoadIdentity()
+    glTranslatef(pos2f.x / 386 - 4/3, pos2f.y / 386 - 1, 0.0)
+    glScalef(scale1f, scale1f, scale1f)
+    glBegin(GL_TRIANGLES)
+    glColor3f(1.0, 0.0, 0.0); glVertex2f(-1.0, 0.0)
+    glColor3f(1.0, 0.0, 0.0); glVertex2f( 0.0, 1.0)
+    glColor3f(1.0, 0.0, 0.0); glVertex2f( 1.0, 0.0)
+    glColor3f(1.0, 0.0, 0.0); glVertex2f( 1.0, 0.0)
+    glColor3f(1.0, 0.0, 0.0); glVertex2f( 0.0,-1.0)
+    glColor3f(1.0, 0.0, 0.0); glVertex2f(-1.0, 0.0)
+    glEnd()
