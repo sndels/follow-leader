@@ -18,10 +18,9 @@ class GLWidget(QGLWidget):
         self.setMinimumSize(self.xres,self.yres)
         self.info = PInfo()
         self.globalParams = PGlobal()
-
         self.leaderParams = PLeader()
-        self.leader = Leader(self.leaderParams, self.globalParams)
         self.followerParams = PFollower()
+        self.leader = Leader(self.leaderParams, self.globalParams)
 
         self.grid = Grid()
         self.followers = []
@@ -30,11 +29,16 @@ class GLWidget(QGLWidget):
         # set info timer
         self.infoTimer = QtCore.QTime()
         self.infoTimer.start()
-        # set compute timer
-        self.computeTimer = QtCore.QTimer()
-        self.computeTimer.setInterval(16)
-        self.computeTimer.timeout.connect(self.compute)
-        self.computeTimer.start()
+        # set update timer
+        self.updateTimer = QtCore.QTimer()
+        self.updateTimer.setInterval(16)
+        self.updateTimer.timeout.connect(self.update)
+        self.updateTimer.start()
+        # set collision check timer
+        self.collisionTimer = QtCore.QTimer()
+        self.collisionTimer.setInterval(32)
+        self.collisionTimer.timeout.connect(self.collision)
+        self.collisionTimer.start()
         # set render timer
         self.renderTimer = QtCore.QTimer()
         self.renderTimer.setInterval(16)
@@ -53,17 +57,17 @@ class GLWidget(QGLWidget):
                 popd = self.followers.pop()
                 self.grid.remove(popd, popd.loc.x, popd.loc.y)
 
-    def compute(self):
-        # compTime = self.infoTimer.elapsed()
+    def update(self):
         self.setFollowers()
         self.leader.move()
+        for i in self.followers:
+            i.move()
+
+    def collision(self):
         collisions = 0
         for i in self.followers:
-            collisions += i.move(self.followers)
+            collisions += i.calcRepulsion(self.followers)
         self.info.collisionChecks = collisions
-        # self.info.computeTime.pop(0)
-        # compTime = self.infoTimer.elapsed() - compTime
-        # self.info.computeTime.append(compTime)
 
     def paintGL(self):
         self.info.computeTime.pop(0)
@@ -96,6 +100,7 @@ class GLWidget(QGLWidget):
         glClearColor(0.0, 0.0, 0.0, 1.0)
 
     def keyPressEvent(self, event):
+        # Handle keypresses for movement
         if event.key() == QtCore.Qt.Key_Space and not event.isAutoRepeat():
             self.leader.toggleControl()
         elif self.leader.isControlled():
@@ -105,6 +110,7 @@ class GLWidget(QGLWidget):
                 self.leader.turn('R')
 
     def setLeaderTarget(self, target):
+        # Calculate simulation coordinates from click and set leader target
         vecTarget = Vector2f(target.x(), target.y())
         vecTarget.x -= 16
         vecTarget.y = 768 - (vecTarget.y - 23)
@@ -116,6 +122,7 @@ class Window(QtGui.QWidget):
         super(Window, self).__init__()
         random.seed(100)
         self.glWidget = GLWidget()
+        # Configure sliders
         self.globalSpeedLabel = self.createLabel("Global Speed")
         self.globalSpeedSlider = self.createSlider(0, 20, 1)
         self.globalSpeedSlider.valueChanged.connect(self.glWidget.globalParams.setSpeed)
@@ -139,7 +146,7 @@ class Window(QtGui.QWidget):
         self.followDistanceLabel = self.createLabel("Follow Distance")
         self.followDistanceSlider = self.createSlider(20, 160, 20)
         self.followDistanceSlider.valueChanged.connect(self.glWidget.followerParams.setFollowDist)
-
+        # Set window layout
         mainLayout = QtGui.QGridLayout()
         mainLayout.addWidget(self.glWidget, 0, 0, 30, 1)
         mainLayout.addWidget(self.globalSpeedLabel, 0, 1, 1, 20)
@@ -155,7 +162,7 @@ class Window(QtGui.QWidget):
         mainLayout.addWidget(self.followDistanceLabel, 15, 1, 1, 20)
         mainLayout.addWidget(self.followDistanceSlider, 16, 1, 1, 20)
         self.setLayout(mainLayout)
-
+        # Init sliders
         self.globalSpeedSlider.setValue(self.glWidget.globalParams.speed * 10)
         self.leaderSpeedSlider.setValue(self.glWidget.leaderParams.maxV * 10)
         self.followerAmountSlider.setValue(self.glWidget.followerParams.num)
@@ -178,9 +185,11 @@ class Window(QtGui.QWidget):
         return label
 
     def keyPressEvent(self, event):
+        # Capture keypresses
         self.glWidget.keyPressEvent(event)
 
     def mousePressEvent(self, event):
+        # Capture mouse clicks
         self.glWidget.setLeaderTarget(event.pos())
 
 if __name__ == '__main__':

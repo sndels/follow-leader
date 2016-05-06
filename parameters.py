@@ -1,7 +1,5 @@
 '''
-Class for simulation Parameters
-
-Holds all simulation parameters and handles changes to mutable ones
+Classes for simulation Parameters
 '''
 class PLeader():
     def __init__(self):

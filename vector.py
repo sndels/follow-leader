@@ -3,6 +3,7 @@ from math import sqrt, sin, cos, atan2, pi
 2d-vector
 
 Stores values x and y
+All functions use radians for angle
 '''
 class Vector2f():
     def __init__(self, x, y):

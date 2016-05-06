@@ -15,6 +15,7 @@ class Grid():
             self.cells[x][y].append(follower)
 
     def getNeighbours(self, x, y):
+        # Returns all followers in the given cell and it's neighbours 
         neighbours = []
         for i in [x-1, x, x+1]:
             for j in [y-1, y, y+1]:
