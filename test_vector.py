@@ -1,6 +1,6 @@
 import unittest
 from math import pi, sqrt, atan2
-from vector import Vector2f, trunc, normalize, dist
+from vector import Vector2f, trunc, normalize, distance
 
 class Test(unittest.TestCase):
     def test_add(self):
@@ -147,16 +147,16 @@ class Test(unittest.TestCase):
         vec1.trunc(2)
         self.assertEqual(round(vec1.len(), 5), 2, "Longer vector failed")
 
-    def test_dist(self):
+    def test_distance(self):
         vec1 = Vector2f(1.0, 0.0)
         vec2 = Vector2f(0.0, 1.0)
-        self.assertEqual(dist(vec1, vec2), sqrt(2), "Dist1 failed")
+        self.assertEqual(distance(vec1, vec2), sqrt(2), "Dist1 failed")
         vec1 = Vector2f(0.0, 0.0)
         vec2 = Vector2f(0.0, 0.0)
-        self.assertEqual(dist(vec1, vec2), 0.0, "Dist2 failed")
+        self.assertEqual(distance(vec1, vec2), 0.0, "Dist2 failed")
         vec1 = Vector2f(0.2314320, 0.3242123)
         vec2 = Vector2f(-0.2342343, 0.0324121)
-        self.assertEqual(round(dist(vec1, vec2), 5), 0.54954, "Dist3 failed")
+        self.assertEqual(round(distance(vec1, vec2), 5), 0.54954, "Dist3 failed")
 
     def test_trunc(self):
         vec1 = Vector2f(0.0, 0.0)
