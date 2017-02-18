@@ -1,4 +1,4 @@
-###Follow the leader -simulation
+###Follow the leader
 
 Simple simulation written in Python3 using PyQt and OpenGL.
 
